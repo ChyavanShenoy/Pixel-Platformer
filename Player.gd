@@ -18,12 +18,15 @@ func _physics_process(_delta: float) -> void:
 	input.x = Input.get_action_strength("right") - Input.get_action_strength("left")
 	if input.x == 0:
 		apply_friction()
+		$Sprite.set_animation("idle")
 	else:
 		apply_acceleration(input.x)
+		$Sprite.set_animation("run")
 	if Input.is_action_pressed("right"):
 		velocity.x = 50
+		$Sprite.flip_h = true
 	elif Input.is_action_pressed("left"):
-		# get_node("Player").set_flip_h(false)
+		$Sprite.flip_h = false
 		velocity.x = -50 
 	else:
 		velocity.x = 0 
@@ -32,12 +35,18 @@ func _physics_process(_delta: float) -> void:
 		if Input.is_action_pressed("jump"):
 			velocity.y = JUMP_FORCE
 	else:
+		$Sprite.set_animation("jump")
 		if Input.is_action_just_released("jump") and velocity.y < JUMP_RELEASE:
-			velocity.y = -30
+			velocity.y = JUMP_RELEASE
 
 		if velocity.y > 0:
 			velocity.y += ADDITIONAL_FALL_GRAVITY
+	var was_in_air = not is_on_floor()
 	velocity = move_and_slide(velocity, Vector2.UP)
+	var just_landed = is_on_floor() and was_in_air
+	if just_landed:
+		$Sprite.set_animation("idle")
+		velocity.y = 0
 
 func apply_gravity():
 	velocity.y += GRAVITY
