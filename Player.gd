@@ -1,4 +1,5 @@
 extends KinematicBody2D
+class_name Player
 
 export (int) var MAX_SPEED = 50
 export (int) var JUMP_FORCE = -130
