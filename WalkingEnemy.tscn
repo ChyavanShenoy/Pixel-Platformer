@@ -23,13 +23,25 @@ animations = [ {
 extents = Vector2( 5.5, 5 )
 
 [node name="WalkingEnemy" type="KinematicBody2D"]
+collision_layer = 2
 script = ExtResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
-position = Vector2( 0, -12 )
+position = Vector2( -1, -12 )
 frames = SubResource( 3 )
 animation = "New Anim"
+flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( -0.5, -5 )
 shape = SubResource( 4 )
+
+[node name="EdgeCheckRight" type="RayCast2D" parent="."]
+position = Vector2( 5, -1 )
+enabled = true
+cast_to = Vector2( 0, 2 )
+
+[node name="EdgeCheckLeft" type="RayCast2D" parent="."]
+position = Vector2( -6, -1 )
+enabled = true
+cast_to = Vector2( 0, 2 )

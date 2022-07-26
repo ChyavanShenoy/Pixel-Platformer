@@ -58,6 +58,11 @@ jump={
  ]
 }
 
+[layer_names]
+
+2d_render/layer_1="World"
+2d_render/layer_2="Characters"
+
 [physics]
 
 common/enable_pause_aware_picking=true
