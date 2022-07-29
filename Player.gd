@@ -1,6 +1,8 @@
 extends KinematicBody2D
 class_name Player
 
+enum { MOVE, CLIMB }
+
 export(Resource) var moveData
 
 var velocity = Vector2.ZERO
@@ -64,4 +66,7 @@ func powerup(powerup_type):
 		moveData = load("res://FastPlayerMovementData.tres")
 
 func is_on_ladder():
-	pass
+	if not LadderCheck.is_colliding(): return false
+	var collider = LadderCheck.get_collider()
+	if not collider is Ladder: return false
+	return true
