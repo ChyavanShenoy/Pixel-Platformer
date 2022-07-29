@@ -25,7 +25,6 @@ shape = SubResource( 3 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
-smoothing_enabled = true
 
 [node name="LadderCheck" type="RayCast2D" parent="."]
 position = Vector2( 0, -1 )
