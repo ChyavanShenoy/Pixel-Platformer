@@ -8,6 +8,9 @@ export (int) var ACCELERATION = 10
 export (int) var FRICTION = 10
 export (int) var GRAVITY = 4
 export (int) var ADDITIONAL_FALL_GRAVITY = 4
+
+export(Resource) var moveData
+
 var velocity = Vector2.ZERO
 
 onready var Sprite = get_node("Sprite")

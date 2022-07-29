@@ -18,10 +18,16 @@ _global_script_classes=[ {
 "class": "Player",
 "language": "GDScript",
 "path": "res://Player.gd"
+}, {
+"base": "Resource",
+"class": "PlayerMovementData",
+"language": "GDScript",
+"path": "res://PlayerMovementData.gd"
 } ]
 _global_script_class_icons={
 "GitAPI": "",
-"Player": ""
+"Player": "",
+"PlayerMovementData": ""
 }
 
 [application]
