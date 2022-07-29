@@ -1,19 +1,13 @@
 extends KinematicBody2D
 class_name Player
 
-export (int) var MAX_SPEED = 50
-export (int) var JUMP_FORCE = -130
-export (int) var JUMP_RELEASE = -35
-export (int) var ACCELERATION = 10
-export (int) var FRICTION = 10
-export (int) var GRAVITY = 4
-export (int) var ADDITIONAL_FALL_GRAVITY = 4
-
 export(Resource) var moveData
 
 var velocity = Vector2.ZERO
 
-onready var Sprite = get_node("Sprite")
+onready var Sprite = $Sprite
+onready var LadderCheck = $LadderCheck
+
 
 func _ready() -> void:
 	Sprite.frames = load("res://PlayerBlueSkin.tres")
@@ -40,14 +34,14 @@ func _physics_process(_delta: float) -> void:
 	
 	if is_on_floor():
 		if Input.is_action_pressed("jump"):
-			velocity.y = JUMP_FORCE
+			velocity.y = moveData.JUMP_FORCE
 	else:
 		Sprite.set_animation("jump")
-		if Input.is_action_just_released("jump") and velocity.y < JUMP_RELEASE:
-			velocity.y = JUMP_RELEASE
+		if Input.is_action_just_released("jump") and velocity.y < moveData.JUMP_RELEASE:
+			velocity.y = moveData.JUMP_RELEASE
 
 		if velocity.y > 0:
-			velocity.y += ADDITIONAL_FALL_GRAVITY
+			velocity.y += moveData.ADDITIONAL_FALL_GRAVITY
 	var was_in_air = not is_on_floor()
 	velocity = move_and_slide(velocity, Vector2.UP)
 	var just_landed = is_on_floor() and was_in_air
@@ -56,11 +50,18 @@ func _physics_process(_delta: float) -> void:
 		velocity.y = 0
 
 func apply_gravity():
-	velocity.y += GRAVITY
-	GRAVITY = clamp(GRAVITY, -MAX_SPEED, MAX_SPEED)
+	velocity.y += moveData.GRAVITY
+	moveData.GRAVITY = clamp(moveData.GRAVITY, -moveData.MAX_SPEED, moveData.MAX_SPEED)
 
 func apply_friction():
-	velocity.x = move_toward(velocity.x, 0, FRICTION)
+	velocity.x = move_toward(velocity.x, 0, moveData.FRICTION)
 
 func apply_acceleration(input_x_amount):
-	velocity.x = move_toward(velocity.x, input_x_amount * MAX_SPEED, ACCELERATION)
+	velocity.x = move_toward(velocity.x, input_x_amount * moveData.MAX_SPEED, moveData.ACCELERATION)
+
+func powerup(powerup_type):
+	if powerup_type == "Movement":
+		moveData = load("res://FastPlayerMovementData.tres")
+
+func is_on_ladder():
+	pass
