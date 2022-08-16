@@ -3,18 +3,16 @@ class_name Player
 
 enum { MOVE, CLIMB }
 
-export(Resource) var moveData
+export(Resource) var moveData = preload("res://FastPlayerMovementData.tres") as PlayerMovementData
 
 var velocity = Vector2.ZERO
 var state = MOVE
+var double_jump = 1
+var buffered_jump = false
 
-onready var Sprite = $Sprite
-onready var LadderCheck = $LadderCheck
-
-
-func _ready() -> void:
-	Sprite.frames = load("res://PlayerBlueSkin.tres")
-	pass
+onready var Sprite: = $Sprite
+onready var LadderCheck: = $LadderCheck
+onready var jumpBufferTimer: = $JumpBufferTimer
 
 func _physics_process(_delta: float) -> void:
 	var input = Vector2.ZERO
@@ -65,12 +63,22 @@ func move_state(input):
 		velocity.x = 0 
 	
 	if is_on_floor():
-		if Input.is_action_pressed("jump"):
+		double_jump = moveData.DOUBLE_JUMP_COUNT
+		if Input.is_action_just_pressed("jump") or buffered_jump:
 			velocity.y = moveData.JUMP_FORCE
+			buffered_jump = false
 	else:
 		Sprite.set_animation("jump")
 		if Input.is_action_just_released("jump") and velocity.y < moveData.JUMP_RELEASE:
 			velocity.y = moveData.JUMP_RELEASE
+			
+		if Input.is_action_just_pressed("jump") and double_jump > 0:
+			velocity.y = moveData.JUMP_FORCE
+			double_jump -= 1
+			
+		if Input.is_action_just_pressed("jump"):
+			buffered_jump = true
+			jumpBufferTimer.start()
 
 		if velocity.y > 0:
 			velocity.y += moveData.ADDITIONAL_FALL_GRAVITY
@@ -87,5 +95,9 @@ func climb_state(input):
 		Sprite.set_animation("run")
 	else:
 		Sprite.set_animation("idle")
-	velocity = input * 50
+	velocity = input * moveData.CLIMB_SPEED
 	velocity = move_and_slide(velocity, Vector2.UP)
+
+
+func _on_JumpBufferTimer_timeout():
+	buffered_jump = false
